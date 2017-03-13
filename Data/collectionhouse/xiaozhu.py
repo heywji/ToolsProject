@@ -4,8 +4,8 @@ import bs4,time,pymongo,requests,html2text
 import itertools
 
 Client = pymongo.MongoClient("localhost",27017)
-Database = Client["XiaoZhu"]
-Datatables = Database[time.strftime("%Y-%m-%d")]
+Database = Client["sh_xiaozhucom"]
+Datatables = Database[time.strftime("sh_%Y%m%d")]
 
 
 h = html2text.HTML2Text()
