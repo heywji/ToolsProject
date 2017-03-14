@@ -71,7 +71,11 @@ for a03141004 in range(1,int(endPage)+1,1):
                 response.encoding="utf-8"
                 soup = bs4.BeautifulSoup(response.content,"lxml")
                 retext = '("date":")[0-9]{4}(-)[0-9]{2}(-)[0-9]{2}(",")[a-z]{5}(":)[0-9]{3}(,)("isRent")(:)[a-z]{4}'
-                a03140528 = str(re.search(retext,soup.text)).split("='")[1].replace("\/","")
+                try:
+                    a03140528 = str(re.search(retext,soup.text)).split("='")[1].replace("\/","")
+                    data["booking"]=a03140528
+                except:
+                    pass
                 # redate = '("date":")[0-9]{4}(-)[0-9]{2}(-)[0-9]{2}(")'
                 # rerend = '("isRent")(:)[a-z]{4}'
                 # mdate = str(re.search(redate,soup.text)).split("=")[2]
@@ -80,6 +84,5 @@ for a03141004 in range(1,int(endPage)+1,1):
                 # a03140528 = str(str(mdate)+str(mrent)).replace(">"," ")
                 # print(a03140528)
                 # data["booking"]=list(a03140528.split())
-                data["booking"]=a03140528
         print(data)
         Datatables.insert_one(data)
