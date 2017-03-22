@@ -12,7 +12,7 @@ def writeList(location="./"):
         i2034 = int(i2031.get("vale"))
     for i2036 in range(1,i2034+1,1):
         get_page=[]
-        get_page.append("http://www.mayi.com/shanghai/{}".format(i2037))
+        get_page.append("http://www.mayi.com/shanghai/{}".format(i2036))
         for i0208 in get_page:
             response = requests.get(i0208)
             time.sleep(2)
