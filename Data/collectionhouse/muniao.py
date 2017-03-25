@@ -1,5 +1,6 @@
 #!/bin/env python3
 # -*- code:utf-8 -*-
+from selenium import webdriver
 import bs4,requests,re,pymongo,time
 
 Client = pymongo.MongoClient("localhost",27017)
@@ -17,11 +18,9 @@ got_late_page = soup.select("div.s_mn_page_bar > a.Lpage_li1")
 for got_late_result in got_late_page: endPage = got_late_result.get("title")
 for a03141004 in range(1,int(endPage)+1,1):
     page_url = "http://www.muniao.com/shanghai/null-0-0-0-0-0-0-0-{}.html".format(a03141004)
-    ### Get Page Over
     response = requests.get(page_url)
     response.encoding="utf-8"
     soup = bs4.BeautifulSoup(response.content,"lxml")
-    ### Get Core Information Begin
     title = soup.select("div.house_details_l > div.s_mn_house_tit > a")
     price = soup.select("div.s_mn_house_price2 > span") # Don't forgot dispose "RMB"
     address = soup.select("div.s_mn_house_img > a[href]")
@@ -31,9 +30,7 @@ for a03141004 in range(1,int(endPage)+1,1):
             "title":title.get_text(),
             "price":str(price.get_text()).split("￥")[1],
             "address":address.get("href"),
-            # "booking":None,
             "location":str(location.get_text()).split("地址")[1].replace(":",""),
-            # "size":None,
         }
         for MoreInformation in data["address"].split():
             response = requests.get(MoreInformation)
@@ -50,39 +47,11 @@ for a03141004 in range(1,int(endPage)+1,1):
             detail = soup.select("#room_nrbox > div.room_mainnr.room_text.f14")
             for a03140516 in detail:  a03140516=str(a03140516.get_text()).replace("\r\n","").split()
             data["datail"]=a03140516
-        # print(data)
-            # Get Size Like Before
-            # booking = soup.select("#shedulebg > div.schedulebox > div.schedule > ul.sche_daybox.f12")
-            # for a03141130 in booking: print(a03141130.get_text())
-            # li[str(data-datestr=)time.strftime(%Y-%m-%d)]
-        for ID in data["address"].split("/")[4].replace(".html","").split():
-            page2_url = "http://m.muniao.com/room.asp?id={}".format(ID)
-            response = requests.get(url=page2_url,headers=headers)
-            response.encoding="utf-8"
-            soup = bs4.BeautifulSoup(response.content,"lxml")
-            Morefangzi = soup.select("#main > a.more_date")
-            for a03140330 in Morefangzi:
-                a03140332 = str("http://m.muniao.com/")+str(a03140330.get("href"))
-                response = requests.get(url=a03140332,headers=headers)
-                response.encoding="utf-8"
-                soup = bs4.BeautifulSoup(response.content,"lxml")
-                json_text = ("http://m.muniao.com/api.asp?id={}&op=calendar").format(ID)
-                response = requests.get(json_text)
-                response.encoding="utf-8"
-                soup = bs4.BeautifulSoup(response.content,"lxml")
-                retext = '("date":")[0-9]{4}(-)[0-9]{2}(-)[0-9]{2}(",")[a-z]{5}(":)[0-9]{3}(,)("isRent")(:)[a-z]{4}'
-                try:
-                    a03140528 = str(re.search(retext,soup.text)).split("='")[1].replace("\/","")
-                    data["booking"]=a03140528
-                except:
-                    pass
-                # redate = '("date":")[0-9]{4}(-)[0-9]{2}(-)[0-9]{2}(")'
-                # rerend = '("isRent")(:)[a-z]{4}'
-                # mdate = str(re.search(redate,soup.text)).split("=")[2]
-                # mrent = str(re.search(rerend,soup.text)).split("=")[2]
-                # search 匹配     match 不匹配
-                # a03140528 = str(str(mdate)+str(mrent)).replace(">"," ")
-                # print(a03140528)
-                # data["booking"]=list(a03140528.split())
+        for WebDriver_of_address in data["address"].split():
+            driver = webdriver.Chrome()
+            driver.get(WebDriver_of_address)
+            soup = driver.find_element_by_class_name("room_Rpq").text
+            data["booking"]=str(soup).replace("\n"," ").replace(' 全部 日历',"")
+            driver.close()
         print(data)
-        Datatables.insert_one(data)
+          # Datatables.insert_one(data)
