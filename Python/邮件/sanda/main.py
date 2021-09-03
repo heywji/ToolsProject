@@ -1,15 +1,10 @@
-#!/usr/bin/python3
-
 import requests
-from test import sendmail
+from test import Mail
 
-class sanda():
-    def __init__(self,result=None):
-        self.result = result
-        self.url = 'http://xsc.sandau.edu.cn/'
-
-    def sendmail(self):
-        sendmail()
+class sanda(Mail):
+    def __init__(self):
+        self.receivers = ['100699031xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxm']
+        self.url = 'http://zws.sandau.edu.cn/'
 
     def testTorF(self):
         try:
@@ -18,7 +13,7 @@ class sanda():
             print("Couldn't parse")
             print('Reason:', e)
         else:
-            sanda().sendmail()
+            self.sendmail()
 
 if __name__ == '__main__':
     t2 = sanda()
