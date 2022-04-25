@@ -1,0 +1,1 @@
+You can use PushDeer.app for sending notifications to every device.
